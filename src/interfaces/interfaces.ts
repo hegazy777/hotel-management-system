@@ -1,20 +1,6 @@
 import { AlertColor } from "@mui/material";
 import { JwtPayload } from "jwt-decode";
 
-export interface ProjectType {
-  id: number;
-  title: string;
-  description: string;
-  creationDate: string;
-  modificationDate: string;
-  task: [];
-}
-
-export interface ProjectTypeForm {
-  title: string;
-  description: string;
-}
-
 export interface UserGroup {
   id: number;
   name: string;
@@ -36,7 +22,7 @@ export interface User {
 }
 
 export type SnackbarContextType = (
-  message: string,
+  message?: string,
   severity?: AlertColor
 ) => void;
 
