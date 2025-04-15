@@ -17,13 +17,13 @@ import Dashboard from "./modules/Dashboard/Dashboard";
 
 function App() {
   const router = createBrowserRouter([
+    { index: true, element: <LandingPage /> },
     {
-      path: "",
+      path: "/",
       element: <AuthLayer />,
       errorElement: <NotFound />,
 
       children: [
-        { index: true, element: <LandingPage /> },
         { path: "login", element: <Login /> },
         { path: "register", element: <Register /> },
         { path: "change-password", element: <ChangePassword /> },

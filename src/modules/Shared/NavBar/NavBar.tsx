@@ -1,14 +1,8 @@
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  Button,
-  Avatar,
-  Link,
-  Stack,
-} from "@mui/material";
+import { AppBar, Toolbar, Avatar, Link, Stack } from "@mui/material";
 import { useContext } from "react";
 import { AuthContext } from "../../../contexts/AuthContext";
+import CustomButton from "../CustomButton/CustomButton";
+import Logo from "../Logo/Logo";
 
 export default function NavBar() {
   const { token } = useContext(AuthContext);
@@ -19,11 +13,7 @@ export default function NavBar() {
       sx={{ paddingInline: "10rem" }}
     >
       <Toolbar>
-        {/* Title */}
-        <Typography variant="h6" sx={{ flexGrow: 1 }}>
-          Staycation.
-        </Typography>
-
+        <Logo />
         <Stack
           direction="row"
           spacing={2}
@@ -51,8 +41,8 @@ export default function NavBar() {
           )}
           {!token && (
             <>
-              <Button variant="contained">Register</Button>
-              <Button variant="contained">Login NOW</Button>
+              <CustomButton>Register</CustomButton>
+              <CustomButton>Login NOW</CustomButton>
             </>
           )}
           {token && (

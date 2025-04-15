@@ -11,7 +11,16 @@ import { useContext } from "react";
 import { AuthContext } from "../../../contexts/AuthContext";
 
 import { AxiosError } from "axios";
-import { Box, Button } from "@mui/material";
+import {
+  Box,
+  IconButton,
+  // Link as MUILink,
+  InputAdornment,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import CustomButton from "../../Shared/CustomButton/CustomButton";
 
 type DataType = { email: string; password: string };
 
@@ -24,10 +33,7 @@ export default function Login() {
 
   const {
     register,
-    formState: {
-      errors,
-      // isSubmitting
-    },
+    formState: { errors, isSubmitting },
     handleSubmit,
   } = useForm({
     mode: "onChange",
@@ -42,7 +48,7 @@ export default function Login() {
       localStorage.setItem("token", response.data.token);
 
       setToken(response?.data?.token);
-      navigate("/dashboard");
+      navigate("/");
       showSnackbar("Logged in successfully", "success");
     } catch (error) {
       const axiosError = error as AxiosError<{ message?: string }>;
@@ -53,62 +59,58 @@ export default function Login() {
     <div className="auth-content p-5">
       {/* <AuthTitle title={"Login"} /> */}
 
-      <Box component="form" onSubmit={handleSubmit(onSubmit)}>
-        <div className="input-group mb-1">
-          <label htmlFor="email">Email</label>
+      <Box
+        component="form"
+        onSubmit={handleSubmit(onSubmit)}
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "16px",
+          p: 2,
+        }}
+      >
+        <Typography variant="h4">Sign In</Typography>
 
-          <input
-            {...register("email")}
-            type="text"
-            // className="form-control"
-            placeholder="Enter your E-mail"
-            aria-label="Email"
-            aria-describedby="basic-addon1"
-          />
-        </div>
-        {errors.email && (
-          <div className="pb-3 text-danger">{errors.email.message}</div>
-        )}
+        <Typography>
+          If you don’t have an account register You can{" "}
+          <Link to="/register">Register here !</Link>
+        </Typography>
 
-        <div className="input-group mb-1">
-          <label htmlFor="password">Password</label>
+        <TextField
+          {...register("email")}
+          label="Email"
+          variant="standard"
+          fullWidth
+          margin="normal"
+          error={Boolean(errors.email)}
+          helperText={errors.email?.message}
+        />
 
-          <input
-            {...register("password")}
-            type={toggle ? "text" : "password"}
-            // className="form-control"
-            placeholder="Password"
-            aria-label="Password"
-            aria-describedby="basic-addon1"
-          />
-          <div className="input-group-append">
-            <span
-              className="input-group-text"
-              onClick={() => {
-                setToggle(!toggle);
-              }}
-            >
-              {/* <FontAwesomeIcon
-                color="white"
-                icon={toggle ? faEyeSlash : faEye}
-              /> */}
-            </span>
-          </div>
-        </div>
+        <TextField
+          {...register("password")}
+          type={toggle ? "text" : "password"}
+          label="Password"
+          variant="standard"
+          fullWidth
+          margin="normal"
+          error={Boolean(errors.password)}
+          helperText={errors.password?.message}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton onClick={() => setToggle(!toggle)} edge="end">
+                  {toggle ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+        />
 
-        {errors.password && (
-          <div className="pb-3 text-danger">{errors.password.message}</div>
-        )}
+        <Link to="/forget-password">Forget Password?</Link>
 
-        <div className="links d-flex justify-content-between my-3">
-          <Link className="text-white" to="/register">
-            Register?
-          </Link>
-          <Link className="text-white" to="/forget-password">
-            Forget Password?
-          </Link>
-        </div>
-        <Button type="submit">Login</Button>
+        <CustomButton fullWidth loading={isSubmitting} type="submit">
+          Login
+        </CustomButton>
       </Box>
     </div>
   );
