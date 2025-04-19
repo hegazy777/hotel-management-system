@@ -1,6 +1,6 @@
 import { useContext } from "react";
-import NavBar from "../Shared/NavBar/NavBar";
-import { AuthContext } from "../../contexts/AuthContext";
+import NavBar from "../NavBar/NavBar";
+import { AuthContext } from "../../../contexts/AuthContext";
 import { Navigate } from "react-router-dom";
 
 export default function LandingPage() {
