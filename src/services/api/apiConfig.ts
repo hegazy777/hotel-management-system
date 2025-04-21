@@ -1,14 +1,16 @@
-export const baseURL = "https://upskilling-egypt.com:3003/api/v1/";
-export const imageURL = "https://upskilling-egypt.com:3003/";
+export const baseURL = "https://upskilling-egypt.com:3000/api/v0/";
+export const imageURL = "https://upskilling-egypt.com:3000/";
 
-export const users_endpoints = {
-  LOGIN: `/Users/Login`,
+export const admin_endpoints = {
+  LOGIN: `/admin/users/login`,
   REGISTER: `/Users/Register`,
   VERIFY: `/Users/Verify`,
   RESET_REQUEST: `/Users/Reset/Request`,
   RESET: `/Users/Reset`,
-  GET_USER: `/Users/currentUser/`,
-  getUser: (id: number) => `/Users/${id}`,
+  GET_USER: (id: string) => `/admin/users/${id}`,
   CHANGE_PASSWORD: `/Users/ChangePassword`,
-  UPDATE_USER: (id: number) => `/Users/${id}`,
+};
+
+export const facilities_endpoints = {
+  GET_ALL_FACILITIES: `/admin/room-facilities`,
 };

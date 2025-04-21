@@ -35,5 +35,6 @@ export type AuthContextType = {
 };
 
 export interface CustomJwtPayload extends JwtPayload {
-  userGroup: "Manager" | "Employee";
+  _id: string;
+  role: "admin" | "user";
 }
