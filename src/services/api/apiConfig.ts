@@ -13,4 +13,7 @@ export const admin_endpoints = {
 
 export const facilities_endpoints = {
   GET_ALL_FACILITIES: `/admin/room-facilities`,
+  UPDATE_FACILITY: (id: string) => `/admin/room-facilities/${id}`,
+  DELETE_FACILITY: (id: string) => `/admin/room-facilities/${id}`,
+  ADD_FACILITY: `/admin/room-facilities`,
 };

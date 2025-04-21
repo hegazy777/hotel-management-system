@@ -9,9 +9,13 @@ import {
 } from "@mui/material";
 import { privateApiInstance } from "../../../../services/api/apiInstance";
 import { facilities_endpoints } from "../../../../services/api/apiConfig";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import DropdownMenu from "../../../Shared/DropdownMenu/DropdownMenu";
 import Header from "../../../Shared/Header/Header";
+import FacilityData from "../FacilityData/FacilityData";
+import DeleteConfirmation from "../../../Shared/DeleteConfirmation/DeleteConfirmation";
+import { SnackbarContext } from "../../../../contexts/SnackbarContext";
+import { AxiosError } from "axios";
 
 interface Facility {
   _id: string;
@@ -21,6 +25,8 @@ interface Facility {
 }
 
 export default function Facilities() {
+  const showSnackbar = useContext(SnackbarContext);
+
   const [facilitiesList, setFacilitiesList] = useState<Facility[]>([]);
   const getAllFacilities = async () => {
     const response = await privateApiInstance(
@@ -34,13 +40,45 @@ export default function Facilities() {
     getAllFacilities();
   }, []);
 
+  const [showModal, setShowModal] = useState(false);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  const handleShow = (id: string) => {
+    setShowModal(true);
+    setSelectedId(id);
+  };
+
+  const handleClose = () => {
+    setShowModal(false);
+    setSelectedId(null);
+  };
+
+  const handleCloseAndDelete = (id: string | null) => {
+    handleClose();
+    if (id) deleteFacility(id);
+  };
+
+  const deleteFacility = async (selectedId: string) => {
+    try {
+      await privateApiInstance.delete(
+        facilities_endpoints.DELETE_FACILITY(selectedId)
+      );
+      showSnackbar("Facility deleted successfully", "success");
+      getAllFacilities();
+    } catch (error) {
+      const axiosError = error as AxiosError<{ message?: string }>;
+      showSnackbar(
+        axiosError?.response?.data?.message || "Something went wrong",
+        "error"
+      );
+    }
+  };
+
   return (
     <>
-      <Header
-        headerTitle="Facilities"
-        buttonText="Facility"
-        onAdd={() => console.log("Hello Add me")}
-      />
+      <Header headerTitle="Facilities">
+        <FacilityData getAllFacilities={getAllFacilities} />
+      </Header>
       <TableContainer component={Paper} sx={{ boxShadow: "none" }}>
         <Table sx={{ borderCollapse: "collapse" }}>
           <TableHead>
@@ -91,8 +129,14 @@ export default function Facilities() {
                   <TableCell sx={{ border: "none" }}>
                     <DropdownMenu
                       onView={() => console.log("View")}
-                      onEdit={() => console.log("Edit")}
-                      onDelete={() => console.log("Delete")}
+                      EditButton={
+                        <FacilityData
+                          selectedId={facility._id}
+                          name={facility.name}
+                          getAllFacilities={getAllFacilities}
+                        />
+                      }
+                      onDelete={() => handleShow(facility._id)}
                     />
                   </TableCell>
                 </TableRow>
@@ -100,6 +144,12 @@ export default function Facilities() {
           </TableBody>
         </Table>
       </TableContainer>
+      <DeleteConfirmation
+        itemName="Facility"
+        open={showModal}
+        onClose={handleClose}
+        onConfirm={() => handleCloseAndDelete(selectedId)}
+      />
     </>
   );
 }

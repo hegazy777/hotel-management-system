@@ -71,3 +71,9 @@ export const changePasswordSehemaValidation = Yup.object().shape({
   newPassword: newPassword,
   confirmNewPassword: confirmNewPassword,
 });
+
+export const facilityDataSehemaValidation = Yup.object().shape({
+  name: Yup.string()
+    .required("Facility name is required")
+    .min(2, "Facility length shoud be at least 2 characters"),
+});

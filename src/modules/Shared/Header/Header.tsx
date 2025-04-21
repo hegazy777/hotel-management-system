@@ -1,13 +1,16 @@
 import { Box, Button, Typography } from "@mui/material";
+import { ReactNode } from "react";
 
 export default function Header({
   headerTitle,
   buttonText,
   onAdd,
+  children,
 }: {
   headerTitle: string;
-  buttonText: string;
-  onAdd: () => void;
+  buttonText?: string;
+  onAdd?: () => void;
+  children?: ReactNode;
 }) {
   return (
     <Box
@@ -34,21 +37,24 @@ export default function Header({
           You can check all details
         </Typography>
       </Box>
-
-      <Button
-        variant="contained"
-        color="primary"
-        size="large"
-        onClick={onAdd}
-        sx={{
-          textTransform: "none",
-          boxShadow: "none",
-          px: 4,
-          backgroundColor: "#203FC7",
-        }}
-      >
-        Add New {buttonText}
-      </Button>
+      {children ? (
+        children
+      ) : (
+        <Button
+          variant="contained"
+          color="primary"
+          size="large"
+          onClick={onAdd}
+          sx={{
+            textTransform: "none",
+            boxShadow: "none",
+            px: 4,
+            backgroundColor: "#203FC7",
+          }}
+        >
+          Add New {buttonText}
+        </Button>
+      )}
     </Box>
   );
 }

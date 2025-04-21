@@ -1,4 +1,4 @@
-import { MouseEvent, useState } from "react";
+import { MouseEvent, ReactNode, useState } from "react";
 import {
   IconButton,
   Menu,
@@ -8,18 +8,17 @@ import {
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 interface DropdownMenuProps {
   onView?: () => void;
-  onEdit?: () => void;
   onDelete?: () => void;
+  EditButton: ReactNode;
 }
 export default function DropdownMenu({
   onView,
-  onEdit,
   onDelete,
+  EditButton,
 }: DropdownMenuProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -81,17 +80,7 @@ export default function DropdownMenu({
           </ListItemIcon>
           <ListItemText>View</ListItemText>
         </MenuItem>
-        <MenuItem onClick={() => handleAction(onEdit)}>
-          <ListItemIcon>
-            <EditIcon
-              sx={{
-                color: "#203FC7",
-              }}
-              fontSize="small"
-            />
-          </ListItemIcon>
-          <ListItemText>Edit</ListItemText>
-        </MenuItem>
+        {EditButton}
         <MenuItem onClick={() => handleAction(onDelete)}>
           <ListItemIcon>
             <DeleteIcon
