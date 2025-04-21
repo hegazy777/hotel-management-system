@@ -30,7 +30,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       const response = await privateApiInstance.get(
         admin_endpoints.GET_USER(_id)
       );
-      setUser(response.data);
+      setUser(response?.data?.data?.user);
     } catch (error) {
       console.log("❌ Error fetching user data:", error);
       logout();

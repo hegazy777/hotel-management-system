@@ -1,14 +1,15 @@
-import { Box, Typography } from "@mui/material";
-import SideBar from "../SideBar/SideBar";
+import { Box } from "@mui/material";
+// import SideBar from "../SideBar/SideBar";
 import { Outlet } from "react-router-dom";
+import AdminNavBar from "../AdminNavBar/AdminNavBar";
 
 export default function AdminLayout() {
   return (
     <Box sx={{ display: "flex" }}>
-      <SideBar />
+      {/* <SideBar /> */}
 
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        <Typography>Navbar</Typography>
+        <AdminNavBar />
         <Outlet />
       </Box>
     </Box>

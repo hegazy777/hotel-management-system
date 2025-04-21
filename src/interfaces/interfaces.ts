@@ -1,24 +1,17 @@
 import { AlertColor } from "@mui/material";
 import { JwtPayload } from "jwt-decode";
 
-export interface UserGroup {
-  id: number;
-  name: string;
-  creationDate: string;
-  modificationDate: string;
-}
-
 export interface User {
-  id: number;
+  _id: string;
   userName: string;
   email: string;
+  phoneNumber: number;
   country: string;
-  phoneNumber: string;
-  imagePath: string;
-  isActivated: boolean;
-  group: UserGroup;
-  creationDate: string;
-  modificationDate: string;
+  role: string;
+  profileImage: string;
+  verified: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export type SnackbarContextType = (
