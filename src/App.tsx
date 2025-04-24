@@ -14,6 +14,8 @@ import AuthLayer from "./modules/Shared/AuthLayout/AuthLayout";
 import Dashboard from "./modules/Dashboard/Dashboard";
 import LandingPage from "./modules/Shared/LandingPage/LandingPage";
 import NotFound from "./modules/Shared/NotFound/NotFound";
+import { ToastContainer } from 'react-toastify';
+
 
 function App() {
   const router = createBrowserRouter([
@@ -48,6 +50,8 @@ function App() {
     <SnackbarProvider>
       <AuthProvider>
         <RouterProvider router={router} />
+        <ToastContainer />
+
       </AuthProvider>
     </SnackbarProvider>
   );

@@ -71,3 +71,26 @@ export const changePasswordSehemaValidation = Yup.object().shape({
   newPassword: newPassword,
   confirmNewPassword: confirmNewPassword,
 });
+export const emailVefication = {
+  required: `email is requird`,
+  pattern: {
+    value:
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+    message: `must be valid email`,
+  },
+}
+export const verfiVerfication = {
+  required: " OTP is requird",
+
+  pattern: {
+    value: /^[A-Za-z0-9]+$/,
+    message: "please enter the code we sent"
+  }
+}
+export const passwValidation ={
+  required: " password is requird",
+  pattern: {
+    value: /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/,
+    message: `Minimum eight characters and add some of #?!@$%^&*._-`,
+  }
+}

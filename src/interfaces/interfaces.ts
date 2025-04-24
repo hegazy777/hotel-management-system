@@ -37,3 +37,16 @@ export type AuthContextType = {
 export interface CustomJwtPayload extends JwtPayload {
   userGroup: "Manager" | "Employee";
 }
+
+
+export interface fogetPass {
+  email: string
+}
+export interface restPassword {
+  seed: number | string;
+  email: string;
+  password: string | number;
+  confirmPassword: string | number
+
+
+}
