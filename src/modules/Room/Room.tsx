@@ -18,6 +18,17 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
+
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Button,
+} from "@mui/material";
+
+
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
@@ -28,31 +39,38 @@ export default function RoomTable() {
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [selectedRoomId, setSelectedRoomId] = useState(null);
+
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [roomIdToDelete, setRoomIdToDelete] = useState(null);
+  
   const navigate = useNavigate();
+
+  const [openConfirm, setOpenConfirm] = useState(false);
+
   const baseUrlDev = "https://upskilling-egypt.com:3000";
 
-  useEffect(() => {
-    const fetchRooms = async () => {
-      const token = localStorage.getItem("token");
-      try {
-        const response = await axios.get(
-          `${baseUrlDev}/api/v0/admin/rooms?page=1&size=10`,
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
 
-        if (response.data.success) {
-          setRooms(response.data.data.rooms);
-        } else {
-          console.error("API returned an unsuccessful response.");
-        }
-      } catch (error) {
-        console.error("Error fetching rooms:", error);
-      } finally {
-        setLoading(false);
+  const fetchRooms = async () => {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await axios.get(
+        `${baseUrlDev}/api/v0/admin/rooms?page=1&size=10`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      if (response.data.success) {
+        setRooms(response.data.data.rooms);
+      } else {
+        console.error("API returned an unsuccessful response.");
       }
-    };
+    } catch (error) {
+      console.error("Error fetching rooms:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchRooms();
   }, []);
 
@@ -76,10 +94,29 @@ export default function RoomTable() {
     handleMenuClose();
   };
 
-  const handleDelete = () => {
-    console.log("Delete Room:", selectedRoomId);
-    handleMenuClose();
-  };
+ const handleDelete = (id) => {
+  setSelectedRoomId(id);
+  setOpenConfirm(true); 
+  handleMenuClose();
+}
+
+const confirmDeleteRoom = async () => {
+  const token = localStorage.getItem("token");
+  try {
+    await axios.delete(`${baseUrlDev}/api/v0/admin/rooms/${selectedRoomId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    setRooms((prev) => prev.filter((room) => room._id !== selectedRoomId));
+    console.log("Room deleted successfully.");
+  } catch (error) {
+    console.error("Error deleting room:", error);
+  } finally {
+    setOpenConfirm(false); 
+    setSelectedRoomId(null);
+  }
+};
+
 
   return (
     <Box p={4}>
@@ -259,19 +296,24 @@ export default function RoomTable() {
           </ListItemIcon>
           <ListItemText>View</ListItemText>
         </MenuItem>
+
         <MenuItem onClick={handleEdit}>
           <ListItemIcon>
             <EditIcon fontSize="small" />
           </ListItemIcon>
           <ListItemText>Edit</ListItemText>
         </MenuItem>
-        <MenuItem onClick={handleDelete}>
+
+        <MenuItem onClick={() => handleDelete(selectedRoomId)}>
           <ListItemIcon>
             <DeleteIcon fontSize="small" />
           </ListItemIcon>
           <ListItemText>Delete</ListItemText>
         </MenuItem>
       </Menu>
+
+      
     </Box>
+    
   );
 }
