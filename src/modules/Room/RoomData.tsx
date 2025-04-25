@@ -224,8 +224,8 @@ export default function RoomData() {
       </Box>
 
       <Button type="submit" variant="contained" color="primary" sx={{ mt: 4 }}>
-        Submit
-      </Button>
+  {roomId ? "edit Room" : "Add Room"}
+</Button>
     </Box>
   );
 }
