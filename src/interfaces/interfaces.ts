@@ -9,16 +9,16 @@ export interface UserGroup {
 }
 
 export interface User {
-  id: number;
+  _id: string;
   userName: string;
   email: string;
+  phoneNumber: number;
   country: string;
-  phoneNumber: string;
-  imagePath: string;
-  isActivated: boolean;
-  group: UserGroup;
-  creationDate: string;
-  modificationDate: string;
+  role: string;
+  profileImage: string;
+  verified: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export type SnackbarContextType = (
@@ -34,6 +34,9 @@ export type AuthContextType = {
   isManager: boolean;
 };
 
+
+
 export interface CustomJwtPayload extends JwtPayload {
-  userGroup: "Manager" | "Employee";
+  _id: string;
+  role: "admin" | "user";
 }

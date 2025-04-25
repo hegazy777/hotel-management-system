@@ -10,17 +10,19 @@ import AuthProvider from "./contexts/AuthContext";
 import ProtectedRoute from "./modules/Shared/ProtectedRoute/ProtectedRoute";
 import SnackbarProvider from "./contexts/SnackbarContext";
 import AdminLayout from "./modules/Shared/AdminLayout/AdminLayout";
-import AuthLayer from "./modules/Shared/AuthLayout/AuthLayout";
+import AuthLayout from "./modules/Shared/AuthLayout/AuthLayout";
 import Dashboard from "./modules/Dashboard/Dashboard";
 import LandingPage from "./modules/Shared/LandingPage/LandingPage";
 import NotFound from "./modules/Shared/NotFound/NotFound";
+import Room from "./modules/Room/Room";
+import RoomData from "./modules/Room/RoomData";
 
 function App() {
   const router = createBrowserRouter([
     { index: true, element: <LandingPage /> },
     {
       path: "/",
-      element: <AuthLayer />,
+      element: <AuthLayout />,
       errorElement: <NotFound />,
 
       children: [
@@ -39,9 +41,14 @@ function App() {
         <ProtectedRoute>
           <AdminLayout />
         </ProtectedRoute>
+    
       ),
       errorElement: <NotFound />,
-      children: [{ index: true, element: <Dashboard /> }],
+      children: [
+        { index: true, element: <Dashboard /> },
+        { path: "rooms", element: <Room /> },
+        { path: "addRooms", element: <RoomData /> }
+      ],
     },
   ]);
   return (

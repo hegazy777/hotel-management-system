@@ -6,7 +6,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 
 import { loginSehemaValidation } from "../../../services/vaildators";
 import { apiInstance } from "../../../services/api/apiInstance";
-import { users_endpoints } from "../../../services/api/apiConfig";
+import { admin_endpoints } from "../../../services/api/apiConfig";
 import { useContext } from "react";
 import { AuthContext } from "../../../contexts/AuthContext";
 
@@ -44,10 +44,14 @@ export default function Login() {
 
   const onSubmit = async (data: DataType) => {
     try {
-      const response = await apiInstance.post(users_endpoints.LOGIN, data);
-      localStorage.setItem("token", response.data.token);
+      const response = await apiInstance.post(admin_endpoints.LOGIN, data);
+      const tokenWithOutBearerPrefix = response.data.data.token.replace(
+        /^Bearer\s+/i,
+        ""
+      );
+      localStorage.setItem("token", tokenWithOutBearerPrefix);
 
-      setToken(response?.data?.token);
+      setToken(tokenWithOutBearerPrefix);
       navigate("/");
       showSnackbar("Logged in successfully", "success");
     } catch (error) {
