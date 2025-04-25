@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import React, { useEffect, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
 import {
   Box,
   TextField,
@@ -8,119 +8,160 @@ import {
   Typography,
   InputLabel,
   Select,
-  FormControl
-} from '@mui/material';
-import axios from 'axios';
+  FormControl,
+  SelectChangeEvent,
+  OutlinedInput,
+} from "@mui/material";
+import axios from "axios";
 
-const baseUrlDev = 'https://upskilling-egypt.com:3000'; 
+const baseUrlDev = "https://upskilling-egypt.com:3000";
 
+interface Facility {
+  id: string;
+  name: string;
+}
 export default function RoomData() {
-  const { handleSubmit, control, register } = useForm();
+  const { handleSubmit, register } = useForm();
+
+  const [selectedFacilties, setSelectedFacilities] = useState<string[]>([]);
   const [facilities, setFacilities] = useState([]);
   const [images, setImages] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  
   const token = localStorage.getItem("token");
-
 
   const fetchFacilities = async () => {
     try {
-      const res = await axios.get(`${baseUrlDev}/api/v0/admin/room-facilities`,{
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const res = await axios.get(
+        `${baseUrlDev}/api/v0/admin/room-facilities`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       setFacilities(res.data.data.facilities);
     } catch (error) {
-      console.error('Error fetching facilities:', error);
+      console.error("Error fetching facilities:", error);
     }
   };
   useEffect(() => {
-   
     fetchFacilities();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     const files = Array.from(event.dataTransfer.files);
-    setImages(prev => [...prev, ...files]);
+    setImages((prev) => [...prev, ...files]);
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onSubmit = async (data: any) => {
     const formData = new FormData();
-    for (let img of images) {
-      formData.append('images', img);
+    for (const img of images) {
+      formData.append("images", img);
     }
-    for (let key in data) {
+    for (const key in data) {
       formData.append(key, data[key]);
     }
 
     try {
-      await axios.post(`${baseUrlDev}/api/v0/admin/rooms`, formData,{
+      await axios.post(`${baseUrlDev}/api/v0/admin/rooms`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      alert('Room added successfully');
+      alert("Room added successfully");
     } catch (error) {
-      console.error('Error submitting form:', error);
-      alert('Submission failed!');
+      console.error("Error submitting form:", error);
+      alert("Submission failed!");
     }
   };
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {
-      setImages(prev => [...prev, ...Array.from(files)]);
+      setImages((prev) => [...prev, ...Array.from(files)]);
     }
+  };
+
+  const handleChange = (event: SelectChangeEvent<typeof selectedFacilties>) => {
+    const {
+      target: { value },
+    } = event;
+    setSelectedFacilities(typeof value === "string" ? value.split(",") : value);
   };
 
   return (
     <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ p: 4 }}>
-      <TextField fullWidth label="Room Number" {...register("roomNumber")} margin="normal" />
-      
+      <TextField
+        fullWidth
+        label="Room Number"
+        {...register("roomNumber")}
+        margin="normal"
+      />
+
       <Box display="flex" gap={2}>
-        <TextField fullWidth label="Price" {...register("price")} margin="normal" />
-        <TextField fullWidth label="Capacity" {...register("capacity")} margin="normal" />
+        <TextField
+          fullWidth
+          label="Price"
+          {...register("price")}
+          margin="normal"
+        />
+        <TextField
+          fullWidth
+          label="Capacity"
+          {...register("capacity")}
+          margin="normal"
+        />
       </Box>
 
       <Box display="flex" gap={2}>
-        <TextField fullWidth label="Discount" {...register("discount")} margin="normal" />
-        
+        <TextField
+          fullWidth
+          label="Discount"
+          {...register("discount")}
+          margin="normal"
+        />
+
         <FormControl fullWidth margin="normal">
           <InputLabel>Facilities</InputLabel>
-          <Controller
-            control={control}
+          <Select
             multiple
-            name="facilities"
-            render={({ field }) => (
-              <Select {...field} label="Facilities">
-                {facilities.map((fac: any) => (
-                  <MenuItem key={fac.id} value={fac.id}>{fac.name}</MenuItem>
-                ))}
-              </Select>
-            )}
-          />
+            value={selectedFacilties}
+            onChange={handleChange}
+            input={<OutlinedInput label="Facility" />}
+          >
+            {facilities?.map((facility: Facility) => (
+              <MenuItem key={facility.id} value={facility.name}>
+                {facility.name}
+              </MenuItem>
+            ))}
+          </Select>
         </FormControl>
       </Box>
 
       <Box
-        onDragOver={e => e.preventDefault()}
+        onDragOver={(e) => e.preventDefault()}
         onDrop={onDrop}
         sx={{
           mt: 3,
           p: 4,
-          border: '2px dashed green',
+          border: "2px dashed green",
           borderRadius: 2,
-          textAlign: 'center',
-          bgcolor: '#f4fff4',
-          cursor: 'pointer'
+          textAlign: "center",
+          bgcolor: "#f4fff4",
+          cursor: "pointer",
         }}
         onClick={() => fileInputRef.current?.click()}
       >
         <Typography>
-          Drag & Drop or <span style={{ color: 'green', textDecoration: 'underline' }}>Choose a Room Images</span> to Upload
+          Drag & Drop or{" "}
+          <span style={{ color: "green", textDecoration: "underline" }}>
+            Choose a Room Images
+          </span>{" "}
+          to Upload
         </Typography>
         <input
           type="file"
