@@ -23,5 +23,6 @@ export function useLocalStorage() {
   const removeValue = () => {
     window.localStorage.removeItem("token");
   };
+
   return [value, setValue, removeValue] as const;
 }

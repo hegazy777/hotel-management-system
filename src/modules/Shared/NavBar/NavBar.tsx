@@ -3,9 +3,11 @@ import { useContext } from "react";
 import { AuthContext } from "../../../contexts/AuthContext";
 import CustomButton from "../CustomButton/CustomButton";
 import Logo from "../Logo/Logo";
+import { useNavigate } from "react-router-dom";
 
 export default function NavBar() {
   const { token } = useContext(AuthContext);
+  const navigate = useNavigate();
   return (
     <AppBar
       color="transparent"
@@ -41,8 +43,12 @@ export default function NavBar() {
           )}
           {!token && (
             <>
-              <CustomButton>Register</CustomButton>
-              <CustomButton>Login NOW</CustomButton>
+              <CustomButton onClick={() => navigate("register")}>
+                Register
+              </CustomButton>
+              <CustomButton onClick={() => navigate("login")}>
+                Login NOW
+              </CustomButton>
             </>
           )}
           {token && (

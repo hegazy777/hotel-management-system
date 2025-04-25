@@ -1,6 +1,6 @@
 import { createContext, useState, ReactNode } from "react";
 import { Snackbar, Alert, AlertColor } from "@mui/material";
-import { SnackbarContextType } from "../interfaces/interfaces";
+import { SnackbarContextType } from "../interfaces/SnackbarContextInterface";
 
 export const SnackbarContext = createContext<SnackbarContextType>(
   {} as SnackbarContextType

@@ -11,9 +11,10 @@ import ProtectedRoute from "./modules/Shared/ProtectedRoute/ProtectedRoute";
 import SnackbarProvider from "./contexts/SnackbarContext";
 import AdminLayout from "./modules/Shared/AdminLayout/AdminLayout";
 import AuthLayer from "./modules/Shared/AuthLayout/AuthLayout";
-import Dashboard from "./modules/Dashboard/Dashboard";
+import Dashboard from "./modules/Admin/Dashboard/Dashboard";
 import LandingPage from "./modules/Shared/LandingPage/LandingPage";
 import NotFound from "./modules/Shared/NotFound/NotFound";
+import Facilities from "./modules/Admin/Facilities/FacilitiesList/FacilitiesList";
 
 function App() {
   const router = createBrowserRouter([
@@ -41,7 +42,10 @@ function App() {
         </ProtectedRoute>
       ),
       errorElement: <NotFound />,
-      children: [{ index: true, element: <Dashboard /> }],
+      children: [
+        { index: true, element: <Dashboard /> },
+        { path: "facilities", element: <Facilities /> },
+      ],
     },
   ]);
   return (
