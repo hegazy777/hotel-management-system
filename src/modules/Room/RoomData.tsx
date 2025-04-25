@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";import {
+import { useLocation, useNavigate } from "react-router-dom";import {
   Box,
   TextField,
   MenuItem,
@@ -23,14 +23,38 @@ interface Facility {
   name: string;
 }
 export default function RoomData() {
-  const { handleSubmit, register } = useForm();
+  const { handleSubmit, register,setValue } = useForm();
   const showSnackbar = useContext(SnackbarContext);
 
   const [selectedFacilities, setSelectedFacilities] = useState<string[]>([]);
   const [facilities, setFacilities] = useState([]);
   const [images, setImages] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [roomData, setRoomData] = useState<any>(null);
 
+  const location = useLocation();
+  const roomId = location.state?.roomId;
+
+
+  useEffect(() => {
+    if (roomId) {
+      
+      axios
+        .get(`${baseUrlDev}/api/v0/admin/rooms/${roomId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((res) => {
+          setRoomData(res.data.data.room);
+          console.log("sasa",res);
+          setValue("roomNumber", res.data.data.room.roomNumber);
+          setValue("price", res.data.data.room.price);
+          setValue("capacity", res.data.data.room.capacity);
+          setValue("discount", res.data.data.room.discount);
+          setSelectedFacilities(res.data.data.room.map((facility: Facility) => facility._id));
+        })
+        .catch((err) => console.error(err));
+    }
+  }, [roomId]);
 
   const navigate = useNavigate();
 
@@ -52,9 +76,10 @@ export default function RoomData() {
       console.error("Error fetching facilities:", error);
     }
   };
+
+
   useEffect(() => {
     fetchFacilities();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onDrop = (event: React.DragEvent<HTMLDivElement>) => {
@@ -63,35 +88,43 @@ export default function RoomData() {
     setImages((prev) => [...prev, ...files]);
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onSubmit = async (data: any) => {
     const formData = new FormData();
-    console.log(data);
+  
     for (const img of images) {
       formData.append("imgs", img);
     }
+  
     for (const facility of selectedFacilities) {
       formData.append("facilities", facility);
     }
-
+  
     for (const key in data) {
       formData.append(key, data[key]);
     }
-
+  
     try {
-      await axios.post(`${baseUrlDev}/api/v0/admin/rooms`, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      showSnackbar("Room added successfully");
+      if (roomId) {
+        // تعديل
+        await axios.put(`${baseUrlDev}/api/v0/admin/rooms/${roomId}`, formData, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        showSnackbar("Room updated successfully");
+      } else {
+        // إضافة
+        await axios.post(`${baseUrlDev}/api/v0/admin/rooms`, formData, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        showSnackbar("Room added successfully");
+      }
+  
       navigate("/dashboard/rooms");
-
     } catch (error) {
       console.error("Error submitting form:", error);
       alert("Submission failed!");
     }
   };
+  
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;

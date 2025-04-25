@@ -34,6 +34,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
 import deleteImage from "../../assets/Email.png";
+
+
 export default function RoomTable() {
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -44,6 +46,8 @@ export default function RoomTable() {
   const [selectedRoomId, setSelectedRoomId] = useState(null);
 
   const navigate = useNavigate();
+
+ 
 
 
   const baseUrlDev = "https://upskilling-egypt.com:3000";
@@ -87,8 +91,11 @@ export default function RoomTable() {
     handleMenuClose();
   };
 
-  const handleEdit = () => {
-    console.log("Edit Room:", selectedRoomId);
+  
+  const handleEdit = (roomId: string) => {
+    navigate("/dashboard/addRooms", {
+      state: { roomId: roomId },
+    });
     handleMenuClose();
   };
 
@@ -294,7 +301,7 @@ export default function RoomTable() {
           <ListItemText>View</ListItemText>
         </MenuItem>
 
-        <MenuItem onClick={handleEdit}>
+        <MenuItem onClick={() => handleEdit(selectedRoomId)}>
           <ListItemIcon>
             <EditIcon fontSize="small" />
           </ListItemIcon>
