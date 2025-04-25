@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import {
+import { useNavigate } from "react-router-dom";import {
   Box,
   TextField,
   MenuItem,
@@ -13,6 +13,8 @@ import {
   OutlinedInput,
 } from "@mui/material";
 import axios from "axios";
+import { useContext } from "react";
+import { SnackbarContext } from "../../contexts/SnackbarContext";
 
 const baseUrlDev = "https://upskilling-egypt.com:3000";
 
@@ -22,11 +24,15 @@ interface Facility {
 }
 export default function RoomData() {
   const { handleSubmit, register } = useForm();
+  const showSnackbar = useContext(SnackbarContext);
 
   const [selectedFacilities, setSelectedFacilities] = useState<string[]>([]);
   const [facilities, setFacilities] = useState([]);
   const [images, setImages] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+
+  const navigate = useNavigate();
 
   const token = localStorage.getItem("token");
 
@@ -78,7 +84,9 @@ export default function RoomData() {
           Authorization: `Bearer ${token}`,
         },
       });
-      alert("Room added successfully");
+      showSnackbar("Room added successfully");
+      navigate("/dashboard/rooms");
+
     } catch (error) {
       console.error("Error submitting form:", error);
       alert("Submission failed!");
