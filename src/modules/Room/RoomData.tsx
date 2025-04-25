@@ -17,13 +17,13 @@ import axios from "axios";
 const baseUrlDev = "https://upskilling-egypt.com:3000";
 
 interface Facility {
-  id: string;
+  _id: string;
   name: string;
 }
 export default function RoomData() {
   const { handleSubmit, register } = useForm();
 
-  const [selectedFacilties, setSelectedFacilities] = useState<string[]>([]);
+  const [selectedFacilities, setSelectedFacilities] = useState<string[]>([]);
   const [facilities, setFacilities] = useState([]);
   const [images, setImages] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -40,6 +40,7 @@ export default function RoomData() {
           },
         }
       );
+
       setFacilities(res.data.data.facilities);
     } catch (error) {
       console.error("Error fetching facilities:", error);
@@ -59,9 +60,14 @@ export default function RoomData() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onSubmit = async (data: any) => {
     const formData = new FormData();
+    console.log(data);
     for (const img of images) {
-      formData.append("images", img);
+      formData.append("imgs", img);
     }
+    for (const facility of selectedFacilities) {
+      formData.append("facilities", facility);
+    }
+
     for (const key in data) {
       formData.append(key, data[key]);
     }
@@ -86,11 +92,14 @@ export default function RoomData() {
     }
   };
 
-  const handleChange = (event: SelectChangeEvent<typeof selectedFacilties>) => {
-    const {
-      target: { value },
-    } = event;
-    setSelectedFacilities(typeof value === "string" ? value.split(",") : value);
+  const handleChange = (event: SelectChangeEvent<string[]>) => {
+    const value = event.target.value as string[];
+
+    const uniqueArray: string[] = Array.from(
+      new Set([...selectedFacilities, ...value])
+    );
+
+    setSelectedFacilities(uniqueArray);
   };
 
   return (
@@ -129,12 +138,12 @@ export default function RoomData() {
           <InputLabel>Facilities</InputLabel>
           <Select
             multiple
-            value={selectedFacilties}
+            value={selectedFacilities}
             onChange={handleChange}
             input={<OutlinedInput label="Facility" />}
           >
             {facilities?.map((facility: Facility) => (
-              <MenuItem key={facility.id} value={facility.name}>
+              <MenuItem key={facility._id} value={facility._id}>
                 {facility.name}
               </MenuItem>
             ))}
