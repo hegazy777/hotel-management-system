@@ -28,13 +28,12 @@ import {
   Button,
 } from "@mui/material";
 
-
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
-
+import deleteImage from "../../assets/Email.png";
 export default function RoomTable() {
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -42,13 +41,12 @@ export default function RoomTable() {
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [roomIdToDelete, setRoomIdToDelete] = useState(null);
-  
+  const [selectedRoomId, setSelectedRoomId] = useState(null);
+
   const navigate = useNavigate();
 
-  const [openConfirm, setOpenConfirm] = useState(false);
 
   const baseUrlDev = "https://upskilling-egypt.com:3000";
-
 
   const fetchRooms = async () => {
     const token = localStorage.getItem("token");
@@ -94,29 +92,28 @@ export default function RoomTable() {
     handleMenuClose();
   };
 
- const handleDelete = (id) => {
-  setSelectedRoomId(id);
-  setOpenConfirm(true); 
-  handleMenuClose();
-}
+  const handleDeleteClick = (id) => {
+    setRoomIdToDelete(id);
+    setDeleteDialogOpen(true);
+    handleMenuClose();
+  };
 
-const confirmDeleteRoom = async () => {
-  const token = localStorage.getItem("token");
-  try {
-    await axios.delete(`${baseUrlDev}/api/v0/admin/rooms/${selectedRoomId}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-
-    setRooms((prev) => prev.filter((room) => room._id !== selectedRoomId));
-    console.log("Room deleted successfully.");
-  } catch (error) {
-    console.error("Error deleting room:", error);
-  } finally {
-    setOpenConfirm(false); 
-    setSelectedRoomId(null);
-  }
-};
-
+  const handleDelete = async (id) => {
+    const token = localStorage.getItem("token");
+    try {
+      await axios.delete(`${baseUrlDev}/api/v0/admin/rooms/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+  
+      setRooms((prevRooms) => prevRooms.filter((room) => room._id !== id));
+      console.log("Room deleted successfully.");
+    } catch (error) {
+      console.error("Error deleting room:", error);
+    } finally {
+      setDeleteDialogOpen(false);
+    }
+  };
+  
 
   return (
     <Box p={4}>
@@ -304,7 +301,7 @@ const confirmDeleteRoom = async () => {
           <ListItemText>Edit</ListItemText>
         </MenuItem>
 
-        <MenuItem onClick={() => handleDelete(selectedRoomId)}>
+        <MenuItem onClick={() => handleDeleteClick(selectedRoomId)}>
           <ListItemIcon>
             <DeleteIcon fontSize="small" />
           </ListItemIcon>
@@ -312,8 +309,38 @@ const confirmDeleteRoom = async () => {
         </MenuItem>
       </Menu>
 
-      
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}
+      >
+        <DialogContent sx={{ textAlign: "center", p: 4 }}>
+        <img src={deleteImage} alt="delete" style={{ width: 100, marginBottom: 16 }} />
+
+          <Typography variant="h6" fontWeight="bold">
+            Delete This Room ?
+          </Typography>
+          <Typography variant="body2" color="text.secondary" mt={1}>
+            Are you sure you want to delete this item? If you are sure just
+            click on delete it.
+          </Typography>
+        </DialogContent>
+        <DialogActions sx={{ justifyContent: "center", pb: 3 }}>
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={() => setDeleteDialogOpen(false)}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={() => handleDelete(roomIdToDelete)}
+          >
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
-    
   );
 }
