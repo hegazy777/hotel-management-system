@@ -1,6 +1,3 @@
-import { AlertColor } from "@mui/material";
-import { JwtPayload } from "jwt-decode";
-
 export interface User {
   _id: string;
   userName: string;
@@ -14,11 +11,6 @@ export interface User {
   updatedAt: string;
 }
 
-export type SnackbarContextType = (
-  message?: string,
-  severity?: AlertColor
-) => void;
-
 export type AuthContextType = {
   token: string | null;
   user: User | null;
@@ -26,8 +18,3 @@ export type AuthContextType = {
   logout: () => void;
   isManager: boolean;
 };
-
-export interface CustomJwtPayload extends JwtPayload {
-  _id: string;
-  role: "admin" | "user";
-}

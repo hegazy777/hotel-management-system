@@ -16,13 +16,7 @@ import FacilityData from "../FacilityData/FacilityData";
 import DeleteConfirmation from "../../../Shared/DeleteConfirmation/DeleteConfirmation";
 import { SnackbarContext } from "../../../../contexts/SnackbarContext";
 import { AxiosError } from "axios";
-
-interface Facility {
-  _id: string;
-  name: string;
-  createdAt: string;
-  updatedAt: string;
-}
+import { Facility } from "../../../../interfaces/Facility";
 
 export default function Facilities() {
   const showSnackbar = useContext(SnackbarContext);

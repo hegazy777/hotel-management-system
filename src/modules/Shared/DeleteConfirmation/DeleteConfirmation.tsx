@@ -7,15 +7,9 @@ import {
   IconButton,
   Box,
 } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
-
+import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import DeleteImg from "../../../assets/Delete.svg";
-interface DeleteDialogProps {
-  open: boolean;
-  onClose: () => void;
-  onConfirm: () => void;
-  itemName: string; // The name of the item being deleted
-}
+import { DeleteDialogProps } from "../../../interfaces/DeleteConfirmationInterface";
 
 export default function DeleteConfirmation({
   open,
@@ -35,7 +29,7 @@ export default function DeleteConfirmation({
     >
       <DialogTitle>
         <IconButton onClick={onClose} sx={{ float: "right" }}>
-          <CloseIcon color="error" />
+          <CancelOutlinedIcon color="error" />
         </IconButton>
       </DialogTitle>
       <DialogContent>

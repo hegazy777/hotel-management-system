@@ -10,19 +10,13 @@ import { admin_endpoints } from "../../../services/api/apiConfig";
 import { useContext } from "react";
 import { AuthContext } from "../../../contexts/AuthContext";
 
-import { AxiosError } from "axios";
-import {
-  Box,
-  IconButton,
-  // Link as MUILink,
-  InputAdornment,
-  TextField,
-  Typography,
-} from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { isAxiosError } from "axios";
+import { Box, Typography } from "@mui/material";
 import CustomButton from "../../Shared/CustomButton/CustomButton";
-
-type DataType = { email: string; password: string };
+import { LoginFormType } from "../../../interfaces/LoginFormInterface";
+import PasswordField from "../../Shared/CustomPasswordField/CustomPasswordField";
+import CustomTextField from "../../Shared/CustomTextField/CustomTextField";
+import { AxiosErrorResponse } from "../../../interfaces/AxiosErrorResponseInterface";
 
 export default function Login() {
   const showSnackbar = useContext(SnackbarContext);
@@ -42,7 +36,7 @@ export default function Login() {
 
   const [toggle, setToggle] = useState(false);
 
-  const onSubmit = async (data: DataType) => {
+  const onSubmit = async (data: LoginFormType) => {
     try {
       const response = await apiInstance.post(admin_endpoints.LOGIN, data);
       const tokenWithOutBearerPrefix = response.data.data.token.replace(
@@ -55,14 +49,18 @@ export default function Login() {
       navigate("/");
       showSnackbar("Logged in successfully", "success");
     } catch (error) {
-      const axiosError = error as AxiosError<{ message?: string }>;
-      showSnackbar(axiosError?.response?.data?.message, "error");
+      if (isAxiosError(error)) {
+        const errorMessage =
+          (error.response?.data as AxiosErrorResponse)?.message ??
+          "An unexpected error occurred";
+        showSnackbar(errorMessage, "error");
+      } else {
+        showSnackbar("Network error, please try again later", "error");
+      }
     }
   };
   return (
-    <div className="auth-content p-5">
-      {/* <AuthTitle title={"Login"} /> */}
-
+    <div className="">
       <Box
         component="form"
         onSubmit={handleSubmit(onSubmit)}
@@ -80,34 +78,18 @@ export default function Login() {
           <Link to="/register">Register here !</Link>
         </Typography>
 
-        <TextField
-          {...register("email")}
+        <CustomTextField
           label="Email"
-          variant="standard"
-          fullWidth
-          margin="normal"
-          error={Boolean(errors.email)}
-          helperText={errors.email?.message}
+          register={register("email")}
+          error={errors.email}
         />
 
-        <TextField
-          {...register("password")}
-          type={toggle ? "text" : "password"}
+        <PasswordField
           label="Password"
-          variant="standard"
-          fullWidth
-          margin="normal"
-          error={Boolean(errors.password)}
-          helperText={errors.password?.message}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton onClick={() => setToggle(!toggle)} edge="end">
-                  {toggle ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
+          register={register("password")}
+          error={errors.password}
+          toggle={toggle}
+          setToggle={setToggle}
         />
 
         <Link to="/forget-password">Forget Password?</Link>

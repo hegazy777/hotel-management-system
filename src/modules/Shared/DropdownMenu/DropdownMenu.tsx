@@ -1,4 +1,4 @@
-import { MouseEvent, ReactNode, useState } from "react";
+import { MouseEvent, useState } from "react";
 import {
   IconButton,
   Menu,
@@ -9,12 +9,8 @@ import {
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { DropdownMenuProps } from "../../../interfaces/DropdownMenuPropsInterface";
 
-interface DropdownMenuProps {
-  onView?: () => void;
-  onDelete?: () => void;
-  EditButton: ReactNode;
-}
 export default function DropdownMenu({
   onView,
   onDelete,

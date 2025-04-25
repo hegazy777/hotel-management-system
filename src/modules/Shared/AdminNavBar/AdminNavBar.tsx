@@ -15,7 +15,7 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import { AuthContext } from "../../../contexts/AuthContext";
 
 export default function AdminNavBar() {
-  const { user } = useContext(AuthContext);
+  const { user, logout } = useContext(AuthContext);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [notifications] = useState(3); // Example notification count
 
@@ -65,8 +65,8 @@ export default function AdminNavBar() {
             open={Boolean(anchorEl)}
             onClose={handleMenuClose}
           >
-            <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-            <MenuItem onClick={handleMenuClose}>Logout</MenuItem>
+            <MenuItem>Profile</MenuItem>
+            <MenuItem onClick={logout}>Logout</MenuItem>
           </Menu>
         </Box>
       </Toolbar>

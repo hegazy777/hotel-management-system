@@ -13,29 +13,23 @@ import {
   ListItemText,
   FormControl,
 } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
+
 import EditIcon from "@mui/icons-material/Edit";
 
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useContext, useEffect, useState } from "react";
 import { facilities_endpoints } from "../../../../services/api/apiConfig";
-import { AxiosError } from "axios";
+import { isAxiosError } from "axios";
 import { privateApiInstance } from "../../../../services/api/apiInstance";
 import { SnackbarContext } from "../../../../contexts/SnackbarContext";
 import { facilityDataSehemaValidation } from "../../../../services/vaildators";
-
-// Props interface
-interface FacilityDataProps {
-  selectedId?: string;
-  name?: string;
-  getAllFacilities: () => void;
-}
-
-// Form inputs interface
-interface FormInputs {
-  name: string;
-}
+import { AxiosErrorResponse } from "../../../../interfaces/AxiosErrorResponseInterface";
+import {
+  FacilityDataProps,
+  FacilityDataForm,
+} from "../../../../interfaces/Facility";
 
 export default function FacilityData({
   selectedId,
@@ -51,7 +45,7 @@ export default function FacilityData({
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<FormInputs>({
+  } = useForm<FacilityDataForm>({
     mode: "onChange",
     resolver: yupResolver(facilityDataSehemaValidation),
   });
@@ -67,7 +61,7 @@ export default function FacilityData({
     reset();
   };
 
-  const onSubmit = async (data: FormInputs) => {
+  const onSubmit = async (data: FacilityDataForm) => {
     try {
       if (selectedId && name) {
         await privateApiInstance.put(
@@ -82,11 +76,14 @@ export default function FacilityData({
       getAllFacilities();
       handleClose();
     } catch (error) {
-      const axiosError = error as AxiosError<{ message?: string }>;
-      showSnackbar(
-        axiosError?.response?.data?.message || "Something went wrong",
-        "error"
-      );
+      if (isAxiosError(error)) {
+        const errorMessage =
+          (error.response?.data as AxiosErrorResponse)?.message ??
+          "An unexpected error occurred";
+        showSnackbar(errorMessage, "error");
+      } else {
+        showSnackbar("Network error, please try again later", "error");
+      }
     }
   };
 
@@ -134,7 +131,7 @@ export default function FacilityData({
             {selectedId ? "Edit Facility" : "Add New Facility"}
           </Typography>
           <IconButton onClick={handleClose}>
-            <CloseIcon color="error" />
+            <CancelOutlinedIcon color="error" />
           </IconButton>
         </DialogTitle>
 

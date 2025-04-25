@@ -1,17 +1,12 @@
 import { Box, Button, Typography } from "@mui/material";
-import { ReactNode } from "react";
+import { HeaderProps } from "../../../interfaces/HeaderInterface";
 
 export default function Header({
   headerTitle,
   buttonText,
   onAdd,
   children,
-}: {
-  headerTitle: string;
-  buttonText?: string;
-  onAdd?: () => void;
-  children?: ReactNode;
-}) {
+}: HeaderProps) {
   return (
     <Box
       display="flex"
