@@ -37,24 +37,33 @@ export default function RoomData() {
 
 
   useEffect(() => {
-    if (roomId) {
-      
-      axios
-        .get(`${baseUrlDev}/api/v0/admin/rooms/${roomId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-        .then((res) => {
-          setRoomData(res.data.data.room);
-          console.log("sasa",res);
-          setValue("roomNumber", res.data.data.room.roomNumber);
-          setValue("price", res.data.data.room.price);
-          setValue("capacity", res.data.data.room.capacity);
-          setValue("discount", res.data.data.room.discount);
-          setSelectedFacilities(res.data.data.room.map((facility: Facility) => facility._id));
-        })
-        .catch((err) => console.error(err));
-    }
+    const fetchRoomData = async () => {
+      if (roomId) {
+        try {
+          const response = await axios.get(`${baseUrlDev}/api/v0/admin/rooms/${roomId}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          
+          setRoomData(response.data.data.room);
+          console.log("sasa", response);
+  
+          // تحديث القيم في الفورم باستخدام setValue
+          setValue("roomNumber", response.data.data.room.roomNumber);
+          setValue("price", response.data.data.room.price);
+          setValue("capacity", response.data.data.room.capacity);
+          setValue("discount", response.data.data.room.discount);
+          
+          // تحديث selectedFacilities
+          setSelectedFacilities(response.data.data.room.facilities.map((facility: Facility) => facility._id));
+        } catch (err) {
+          console.error("Error fetching room data:", err);
+        }
+      }
+    };
+  
+    fetchRoomData();
   }, [roomId]);
+  
 
   const navigate = useNavigate();
 
@@ -105,13 +114,13 @@ export default function RoomData() {
   
     try {
       if (roomId) {
-        // تعديل
+      
         await axios.put(`${baseUrlDev}/api/v0/admin/rooms/${roomId}`, formData, {
           headers: { Authorization: `Bearer ${token}` },
         });
         showSnackbar("Room updated successfully");
       } else {
-        // إضافة
+    
         await axios.post(`${baseUrlDev}/api/v0/admin/rooms`, formData, {
           headers: { Authorization: `Bearer ${token}` },
         });
