@@ -16,6 +16,8 @@ import LandingPage from "./modules/Shared/LandingPage/LandingPage";
 import NotFound from "./modules/Shared/NotFound/NotFound";
 import Room from "./modules/Room/Room";
 import RoomData from "./modules/Room/RoomData";
+import BookingList from "./modules/BookingList/BookingList";
+import UserList from "./modules/UserList/UserList";
 
 function App() {
   const router = createBrowserRouter([
@@ -47,7 +49,9 @@ function App() {
       children: [
         { index: true, element: <Dashboard /> },
         { path: "rooms", element: <Room /> },
-        { path: "addRooms", element: <RoomData /> }
+        { path: "addRooms", element: <RoomData /> },
+        { path: "bookingList", element: <BookingList /> },
+        { path: "USerList", element: <UserList /> }
       ],
     },
   ]);

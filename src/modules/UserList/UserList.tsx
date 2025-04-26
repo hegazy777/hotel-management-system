@@ -20,7 +20,7 @@ import {
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 
-export default function BookingList() {
+export default function UserList() {
   const [booking, setBooking] = useState([]);
   const [loading, setLoading] = useState(true);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -32,12 +32,12 @@ export default function BookingList() {
     const token = localStorage.getItem("token");
     try {
       const response = await axios.get(
-        `${baseUrlDev}/api/v0/admin/booking?page=1&size=10`,
+        `${baseUrlDev}/api/v0/admin/users?page=1&size=10`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
       if (response.data.success) {
-        setBooking(response.data.data.booking);
+        setBooking(response.data.data.users);
       } else {
         console.error("API returned an unsuccessful response.");
       }
@@ -77,22 +77,22 @@ export default function BookingList() {
           <Table>
             <TableHead>
               <TableRow sx={{ backgroundColor: "#dfe3eb" }}>
-                <TableCell sx={{ fontWeight: "bold" }}>Room Number</TableCell>
-                <TableCell sx={{ fontWeight: "bold" }}>Price</TableCell>
-                <TableCell sx={{ fontWeight: "bold" }}>Start Date</TableCell>
-                <TableCell sx={{ fontWeight: "bold" }}>End Date</TableCell>
-                <TableCell sx={{ fontWeight: "bold" }}>User</TableCell>
+                <TableCell sx={{ fontWeight: "bold" }}>Name</TableCell>
+                <TableCell sx={{ fontWeight: "bold" }}>Email</TableCell>
+                <TableCell sx={{ fontWeight: "bold" }}>Phone</TableCell>
+                <TableCell sx={{ fontWeight: "bold" }}>Role</TableCell>
+                <TableCell sx={{ fontWeight: "bold" }}>created At</TableCell>
                 <TableCell sx={{ fontWeight: "bold" }}></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {booking.map((book) => (
                 <TableRow key={book._id} sx={{ backgroundColor: "#fdfdfd" }}>
-                  <TableCell>{book.room?.roomNumber || "-"}</TableCell>
-                  <TableCell>{book.totalPrice}</TableCell>
-                  <TableCell>{new Date(book.startDate).toLocaleDateString()}</TableCell>
-                  <TableCell>{new Date(book.endDate).toLocaleDateString()}</TableCell>
-                  <TableCell>{book.user?.userName || "-"}</TableCell>
+                  <TableCell>{book.userName}</TableCell>
+                  <TableCell>{book.email}</TableCell>
+                  <TableCell>{book.phoneNumber}</TableCell>
+                  <TableCell>{book.role}</TableCell>
+                  <TableCell>{book.createdAt}</TableCell>
                   <TableCell>
                     <IconButton onClick={(event) => handleMenuOpen(event, book)}>
                       <VisibilityIcon />
