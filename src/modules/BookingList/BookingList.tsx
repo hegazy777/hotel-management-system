@@ -1,3 +1,10 @@
+// import React from 'react'
+
+// export default function BookingList() {
+//   return (
+//     <div>BookingList</div>
+//   )
+// }
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {
@@ -19,14 +26,6 @@ import {
   ListItemText,
 } from "@mui/material";
 
-import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Button,
-} from "@mui/material";
 
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -36,7 +35,7 @@ import { useNavigate } from "react-router-dom";
 import deleteImage from "../../assets/Email.png";
 
 
-export default function Rooms() {
+export default function BookingList() {
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [anchorEl, setAnchorEl] = useState(null);

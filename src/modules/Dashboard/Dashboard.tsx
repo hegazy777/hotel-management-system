@@ -6,7 +6,7 @@ import { PieChart, Pie, Cell, Legend } from "recharts";
 
 const Dashboard = () => {
   const [totalRooms, setTotalRooms] = useState(0);
-  const [totalFacilities, setTotalFacilities] = useState(0);
+  const [totalFacilities, setTotalFacilities] = useState(160);
 
   const token = localStorage.getItem("token");
 
@@ -21,7 +21,7 @@ const Dashboard = () => {
         }
       );
 
-      setTotalRooms(response?.data?.totalCount ?? 0);
+      setTotalRooms(response.data.data.totalCount);
     } catch (error) {
       console.error("Error fetching rooms:", error);
     }
@@ -36,8 +36,9 @@ const Dashboard = () => {
           },
         }
       );
-
-      setTotalFacilities(response?.data?.totalCount ?? 0);
+      console.log("fdfdsfsd",response);
+      setTotalFacilities(response.data.data.totalCount);
+    
     } catch (error) {
       console.error("Error fetching rooms:", error);
     }
@@ -52,8 +53,6 @@ const Dashboard = () => {
   const pieData1 = [
     { name: "pending", value: 50, color: "#5F6DF8" },
     { name: "completed", value: 20, color: "#A269FF" },
-    { name: "other1", value: 10, color: "#FFB44F" },
-    { name: "other2", value: 20, color: "#FF4F4F" },
   ];
 
   const pieData2 = [
