@@ -30,6 +30,9 @@ import deleteImage from "../../assets/Email.png";
 
 import SharedTable from "../../modules/Shared/CustomTable/CustomTable";
 
+import { privateApiInstance } from "../../services/api/apiInstance";
+import { room_endpoints } from "../../services/api/apiConfig";
+
 export default function Rooms() {
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -41,16 +44,12 @@ export default function Rooms() {
 
   const navigate = useNavigate();
 
-  const baseUrlDev = "https://upskilling-egypt.com:3000";
-
-  const fetchRooms = async () => {
-    const token = localStorage.getItem("token");
+  const fetchRooms = async (page = 1, size = 10) => {
     try {
-      const response = await axios.get(
-        `${baseUrlDev}/api/v0/admin/rooms?page=1&size=10`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-
+      const response = await privateApiInstance.get(room_endpoints.GET_ALL_ROOMS, {
+        params: { page, size },
+      });
+  
       if (response.data.success) {
         setRooms(response.data.data.rooms);
       } else {
@@ -62,9 +61,9 @@ export default function Rooms() {
       setLoading(false);
     }
   };
-
+  
   useEffect(() => {
-    fetchRooms();
+    fetchRooms(1, 10);
   }, []);
 
   const handleMenuOpen = (event, roomId) => {
@@ -96,12 +95,8 @@ export default function Rooms() {
   };
 
   const handleDelete = async (id) => {
-    const token = localStorage.getItem("token");
     try {
-      await axios.delete(`${baseUrlDev}/api/v0/admin/rooms/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
+      await privateApiInstance.delete(room_endpoints.DELETE_ROOM(id));
       setRooms((prevRooms) => prevRooms.filter((room) => room._id !== id));
       console.log("Room deleted successfully.");
     } catch (error) {
@@ -111,6 +106,7 @@ export default function Rooms() {
     }
   };
 
+  
   const columns = [
     { label: "Room Number", field: "roomNumber" },
     {
