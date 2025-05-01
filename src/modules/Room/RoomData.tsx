@@ -15,6 +15,8 @@ import { useLocation, useNavigate } from "react-router-dom";import {
 import axios from "axios";
 import { useContext } from "react";
 import { SnackbarContext } from "../../contexts/SnackbarContext";
+import { privateApiInstance } from "../../services/api/apiInstance";
+import { room_endpoints } from "../../services/api/apiConfig";
 
 const baseUrlDev = "https://upskilling-egypt.com:3000";
 
@@ -40,10 +42,8 @@ export default function RoomData() {
     const fetchRoomData = async () => {
       if (roomId) {
         try {
-          const response = await axios.get(`${baseUrlDev}/api/v0/admin/rooms/${roomId}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          
+          const response = await privateApiInstance.get(room_endpoints.GET_ROOM_BY_ID(roomId));
+    
           setRoomData(response.data.data.room);
           console.log("sasa", response);
   
@@ -116,15 +116,11 @@ export default function RoomData() {
     try {
       if (roomId) {
       
-        await axios.put(`${baseUrlDev}/api/v0/admin/rooms/${roomId}`, formData, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        await  privateApiInstance.put(room_endpoints.UPDATE_ROOM(roomId), formData);
         showSnackbar("Room updated successfully");
       } else {
     
-        await axios.post(`${baseUrlDev}/api/v0/admin/rooms`, formData, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        await privateApiInstance.post(room_endpoints.CREATE_ROOM, formData) ;
         showSnackbar("Room added successfully");
       }
   
