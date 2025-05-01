@@ -53,7 +53,7 @@ export default function RoomData() {
           setValue("capacity", response.data.data.room.capacity);
           setValue("discount", response.data.data.room.discount);
           
-         
+      
           
           setSelectedFacilities(response.data.data.room.facilities.map((facility: Facility) => facility._id));
         } catch (err) {
@@ -157,6 +157,7 @@ export default function RoomData() {
     <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ p: 4 }}>
       <TextField
         fullWidth
+         defaultValue=" "
         label="Room Number"
         {...register("roomNumber")}
         margin="normal"
@@ -165,12 +166,14 @@ export default function RoomData() {
       <Box display="flex" gap={2}>
         <TextField
           fullWidth
+           defaultValue=" "
           label="Price"
           {...register("price")}
           margin="normal"
         />
         <TextField
           fullWidth
+          defaultValue=" "
           label="Capacity"
           {...register("capacity")}
           margin="normal"
@@ -180,6 +183,7 @@ export default function RoomData() {
       <Box display="flex" gap={2}>
         <TextField
           fullWidth
+           defaultValue=" "
           label="Discount"
           {...register("discount")}
           margin="normal"
