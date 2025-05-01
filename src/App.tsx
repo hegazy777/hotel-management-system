@@ -40,9 +40,10 @@ function App() {
     {
       path: "dashboard",
       element: (
-        <ProtectedRoute>
-          <AdminLayout />
-        </ProtectedRoute>
+        // <ProtectedRoute>
+        //   <AdminLayout />
+        // </ProtectedRoute>
+        <AdminLayout />
     
       ),
       errorElement: <NotFound />,

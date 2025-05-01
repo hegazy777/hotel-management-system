@@ -47,13 +47,14 @@ export default function RoomData() {
           setRoomData(response.data.data.room);
           console.log("sasa", response);
   
-          // تحديث القيم في الفورم باستخدام setValue
+         
           setValue("roomNumber", response.data.data.room.roomNumber);
           setValue("price", response.data.data.room.price);
           setValue("capacity", response.data.data.room.capacity);
           setValue("discount", response.data.data.room.discount);
           
-          // تحديث selectedFacilities
+         
+          
           setSelectedFacilities(response.data.data.room.facilities.map((facility: Facility) => facility._id));
         } catch (err) {
           console.error("Error fetching room data:", err);

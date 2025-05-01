@@ -34,10 +34,10 @@ const SideBare = ({ collapsed, setCollapsed }) => {
         label: { fontSize: "14px" },
       }}>
         <MenuItem icon={<Home />} onClick={() => navigate("/")}> Home </MenuItem>
-        <MenuItem icon={<People />} onClick={() => navigate("/users")}> Users </MenuItem>
-        <MenuItem icon={<MeetingRoom />} onClick={() => navigate("/rooms")}> Rooms </MenuItem>
+        <MenuItem icon={<People />} onClick={() => navigate("/dashboard/USerList")}> Users </MenuItem>
+        <MenuItem icon={<MeetingRoom />} onClick={() => navigate("/dashboard/rooms")}> Rooms </MenuItem>
         <MenuItem icon={<EventNote />} onClick={() => navigate("/ads")}> Ads </MenuItem>
-        <MenuItem icon={<BookOnline />} onClick={() => navigate("/bookings")}> Bookings </MenuItem>
+        <MenuItem icon={<BookOnline />} onClick={() => navigate("/dashboard/bookingList")}> Bookings </MenuItem>
         <MenuItem icon={<Lock />} onClick={() => navigate("/change-password")}> Change password </MenuItem>
         <MenuItem icon={<Logout />} onClick={() => navigate("/logout")}> Logout </MenuItem>
       </Menu>

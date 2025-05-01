@@ -19,12 +19,7 @@ import {
   ListItemText,
 } from "@mui/material";
 
-import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  Button,
-} from "@mui/material";
+import { Dialog, DialogActions, DialogContent, Button } from "@mui/material";
 
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -33,6 +28,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
 import deleteImage from "../../assets/Email.png";
 
+import SharedTable from "../../modules/Shared/CustomTable/CustomTable";
 
 export default function Rooms() {
   const [rooms, setRooms] = useState([]);
@@ -44,9 +40,6 @@ export default function Rooms() {
   const [selectedRoomId, setSelectedRoomId] = useState(null);
 
   const navigate = useNavigate();
-
- 
-
 
   const baseUrlDev = "https://upskilling-egypt.com:3000";
 
@@ -89,7 +82,6 @@ export default function Rooms() {
     handleMenuClose();
   };
 
-  
   const handleEdit = (roomId: string) => {
     navigate("/dashboard/addRooms", {
       state: { roomId: roomId },
@@ -109,7 +101,7 @@ export default function Rooms() {
       await axios.delete(`${baseUrlDev}/api/v0/admin/rooms/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-  
+
       setRooms((prevRooms) => prevRooms.filter((room) => room._id !== id));
       console.log("Room deleted successfully.");
     } catch (error) {
@@ -118,7 +110,34 @@ export default function Rooms() {
       setDeleteDialogOpen(false);
     }
   };
-  
+
+  const columns = [
+    { label: "Room Number", field: "roomNumber" },
+    {
+      label: "Image",
+      render: (row) =>
+        row.images?.[0] ? (
+          <Avatar
+            src={row.images[0]}
+            alt="room"
+            variant="rounded"
+            sx={{ width: 60, height: 60 }}
+          />
+        ) : (
+          "No Image"
+        ),
+    },
+    { label: "Price", field: "price" },
+    {
+      label: "Discount",
+      render: () => "Double Room", 
+    },
+    { label: "Capacity", field: "capacity" },
+    {
+      label: "Category",
+      render: (row) => row.facilities?.[0]?.name || "N/A",
+    },
+  ];
 
   return (
     <Box p={4}>
@@ -239,52 +258,11 @@ export default function Rooms() {
           <CircularProgress />
         </Box>
       ) : (
-        <TableContainer
-          component={Paper}
-          sx={{ borderRadius: 4, overflow: "hidden" }}
-        >
-          <Table>
-            <TableHead>
-              <TableRow sx={{ backgroundColor: "#dfe3eb" }}>
-                <TableCell sx={{ fontWeight: "bold" }}>Room Number</TableCell>
-                <TableCell sx={{ fontWeight: "bold" }}>Image</TableCell>
-                <TableCell sx={{ fontWeight: "bold" }}>Price</TableCell>
-                <TableCell sx={{ fontWeight: "bold" }}>Discount</TableCell>
-                <TableCell sx={{ fontWeight: "bold" }}>Capacity</TableCell>
-                <TableCell sx={{ fontWeight: "bold" }}>Category</TableCell>
-                <TableCell />
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rooms.map((room) => (
-                <TableRow key={room._id} sx={{ backgroundColor: "#fdfdfd" }}>
-                  <TableCell>{room.roomNumber}</TableCell>
-                  <TableCell>
-                    {room.images?.[0] ? (
-                      <Avatar
-                        src={room.images[0]}
-                        alt="room"
-                        variant="rounded"
-                        sx={{ width: 60, height: 60 }}
-                      />
-                    ) : (
-                      "No Image"
-                    )}
-                  </TableCell>
-                  <TableCell>{room.price}</TableCell>
-                  <TableCell>Double Room</TableCell>
-                  <TableCell>{room.capacity}</TableCell>
-                  <TableCell>{room.facilities?.[0]?.name || "N/A"}</TableCell>
-                  <TableCell align="right">
-                    <IconButton onClick={(e) => handleMenuOpen(e, room._id)}>
-                      <MoreVertIcon />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+        <SharedTable
+          columns={columns}
+          rows={rooms}
+          onMenuClick={handleMenuOpen}
+        />
       )}
 
       <Menu
@@ -319,7 +297,11 @@ export default function Rooms() {
         onClose={() => setDeleteDialogOpen(false)}
       >
         <DialogContent sx={{ textAlign: "center", p: 4 }}>
-        <img src={deleteImage} alt="delete" style={{ width: 100, marginBottom: 16 }} />
+          <img
+            src={deleteImage}
+            alt="delete"
+            style={{ width: 100, marginBottom: 16 }}
+          />
 
           <Typography variant="h6" fontWeight="bold">
             Delete This Room ?
