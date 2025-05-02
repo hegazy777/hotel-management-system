@@ -11,7 +11,7 @@ import {
   CardContent,
 } from "@mui/material";
 import { Add, Remove, CalendarMonth } from "@mui/icons-material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import banner from "../../../assets/banner.png";
 import Rectangle from "../../../assets/Rectangle3.png";
 import BackyardHousesSection from "./BackyardHousesSection";
@@ -19,8 +19,13 @@ import HotelSection from "./HotelSection";
 import AdsSections from "./AdsSection";
 import TestimonialSlider from "./TestimonalSlider";
 import Footer from "./Footer";
+import { privateApiInstance } from "../../../services/api/apiInstance";
+import { room_endpoints } from "../../../services/api/apiConfig";
+
 export default function LandingPage() {
   const [count, setCount] = useState(2);
+  const [rooms, setRooms] = useState([]);
+
   const listings = [
     {
       title: "Blue Origin Fams",
@@ -53,6 +58,26 @@ export default function LandingPage() {
       image: "https://i.ibb.co/n7ZffgP/5.jpg",
     },
   ];
+  const fetchRooms = async (page = 1, size = 4) => {
+    try {
+      const response = await privateApiInstance.get(room_endpoints.GET_ALL_ROOMS, {
+        params: { page, size },
+      });
+  
+      if (response.data.success) {
+        setRooms(response.data.data.rooms);
+      } else {
+        console.error("API returned an unsuccessful response.");
+      }
+    } catch (error) {
+      console.error("Error fetching rooms:", error);
+    } 
+  };
+  
+  useEffect(() => {
+    fetchRooms(1, 4);
+  }, []);
+
   return (
     <>
       <Box
@@ -169,43 +194,86 @@ export default function LandingPage() {
           Most popular ads
         </Typography>
 
-        <Box
-          sx={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: 3,
-          }}
-        >
-        
-          <Box sx={{ flex: { xs: "100%", md: "25%" } }}>
-            <AdCard item={listings[0]} height={400} />
-          </Box>
+        {rooms.length >= 5 && (
+  <Box
+    sx={{
+      display: "flex",
+      flexWrap: "wrap",
+      gap: 3,
+    }}
+  >
+    {/* الكارت الكبير */}
+    <Box sx={{ flex: { xs: "100%", md: "25%" } }}>
+      <AdCard
+        item={{
+          title: rooms[0].name,
+          location: rooms[0].location,
+          price: `$${rooms[0].price}`,
+          image: rooms[0].images?.[0]?.url || Rectangle,
+        }}
+        height={400}
+      />
+    </Box>
 
-       
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 3,
-              flex: { xs: "100%", md: "25%" },
-            }}
-          >
-            <AdCard item={listings[1]} height={190} />
-            <AdCard item={listings[2]} height={190} />
-          </Box>
+    {/* صف الكروت الصغيرة - العمود الأول */}
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 3,
+        flex: { xs: "100%", md: "25%" },
+      }}
+    >
+      <AdCard
+        item={{
+          title: rooms[1].name,
+          location: rooms[1].location,
+          price: `$${rooms[1].price}`,
+          image: rooms[1].images?.[0]?.url || Rectangle,
+        }}
+        height={190}
+      />
+      <AdCard
+        item={{
+          title: rooms[2].name,
+          location: rooms[2].location,
+          price: `$${rooms[2].price}`,
+          image: rooms[2].images?.[0]?.url || Rectangle,
+        }}
+        height={190}
+      />
+    </Box>
 
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 3,
-              flex: { xs: "100%", md: "25%" },
-            }}
-          >
-            <AdCard item={listings[1]} height={190} />
-            <AdCard item={listings[2]} height={190} />
-          </Box>
-        </Box>
+    {/* صف الكروت الصغيرة - العمود الثاني */}
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 3,
+        flex: { xs: "100%", md: "25%" },
+      }}
+    >
+      <AdCard
+        item={{
+          title: rooms[3].name,
+          location: rooms[3].location,
+          price: `$${rooms[3].price}`,
+          image: rooms[3].images?.[0]?.url || Rectangle,
+        }}
+        height={190}
+      />
+      <AdCard
+        item={{
+          title: rooms[4].name,
+          location: rooms[4].location,
+          price: `$${rooms[4].price}`,
+          image: rooms[4].images?.[0]?.url || Rectangle,
+        }}
+        height={190}
+      />
+    </Box>
+  </Box>
+)}
       </Box>
       <BackyardHousesSection />
       <HotelSection/>
@@ -244,12 +312,12 @@ function AdCard({ item, height }) {
         {item.price} per night
       </Box>
       <CardMedia
-        component="img"
-        height="100%"
-        image={Rectangle}
-        alt={item.title}
-        sx={{ objectFit: "cover" }}
-      />
+  component="img"
+  height="100%"
+  image={item.image}
+  alt={item.title}
+  sx={{ objectFit: "cover" }}
+/>
       <CardContent
         sx={{
           position: "absolute",
