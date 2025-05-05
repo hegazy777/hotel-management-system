@@ -68,6 +68,7 @@ export default function RoomDetails() {
     // Fetch room details using roomId
 
     fetchRoomDetails(roomId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roomId]);
 
   if (loading) {
