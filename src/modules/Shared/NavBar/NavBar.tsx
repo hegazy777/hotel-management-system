@@ -6,7 +6,7 @@ import Logo from "../Logo/Logo";
 import { useNavigate } from "react-router-dom";
 
 export default function NavBar() {
-  const { token } = useContext(AuthContext);
+  const { token, user } = useContext(AuthContext);
   const navigate = useNavigate();
   return (
     <AppBar
@@ -43,20 +43,15 @@ export default function NavBar() {
           )}
           {!token && (
             <>
-              <CustomButton onClick={() => navigate("register")}>
+              <CustomButton onClick={() => navigate("auth/register")}>
                 Register
               </CustomButton>
-              <CustomButton onClick={() => navigate("login")}>
+              <CustomButton onClick={() => navigate("auth/login")}>
                 Login NOW
               </CustomButton>
             </>
           )}
-          {token && (
-            <Avatar
-              alt="Travis Howard"
-              src="https://mui.com/static/images/avatar/2.jpg"
-            />
-          )}
+          {token && <Avatar alt="Travis Howard" src={user?.profileImage} />}
         </Stack>
       </Toolbar>
     </AppBar>

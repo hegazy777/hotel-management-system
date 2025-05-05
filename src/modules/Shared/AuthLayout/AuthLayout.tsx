@@ -9,9 +9,10 @@ export default function AuthLayout() {
   if (token && isManager) {
     return <Navigate to="/dashboard" />;
   }
-  if (token) {
+  if (token && !isManager) {
     return <Navigate to="/" />;
   }
+
   return (
     <Grid container spacing={2}>
       <Grid size={6}>
