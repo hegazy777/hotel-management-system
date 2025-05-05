@@ -13,6 +13,7 @@ import { userRooms_endpoints } from "../../../services/api/apiConfig";
 import RoomImages from "./RoomImages";
 import RoomDescription from "./RoomDescription";
 import RoomBooking from "./RoomBooking";
+import RoomReviews from "./RoomReviews";
 
 type Facility = {
   _id: string;
@@ -121,8 +122,7 @@ export default function RoomDetails() {
         />
       </RoomDescription>
 
-      {/* Review and Comments */}
-      {/* <ReviewsSection /> */}
+      <RoomReviews />
     </Box>
   );
 }

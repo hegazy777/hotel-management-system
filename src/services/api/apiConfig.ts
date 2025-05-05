@@ -23,3 +23,12 @@ export const facilities_endpoints = {
   DELETE_FACILITY: (id: string) => `/admin/room-facilities/${id}`,
   ADD_FACILITY: `/admin/room-facilities`,
 };
+
+export const comments_endpoints = {
+  GET_ALL_COMMENTS: `/portal/room-comments`,
+  CREATE_COMMENT: `/portal/room-comments`,
+};
+
+export const reviews_endpoints = {
+  CREATE_REVIEW: `/portal/room-reviews`,
+};
