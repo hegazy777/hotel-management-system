@@ -65,7 +65,13 @@ export default function RoomBooking({
       );
 
       navigate("/payment/checkout", {
-        state: { bookingId: res?.data?.data?.booking?._id },
+        state: {
+          bookingId: res?.data?.data?.booking?._id,
+          startDate: res?.data?.data?.booking?.startDate,
+          endDate: res?.data?.data?.booking?.endDate,
+          totalPrice: res?.data?.data?.booking?.totalPrice,
+          capacity,
+        },
       });
       showSnackbar("Room is booked successfully", "success");
     } catch (error) {

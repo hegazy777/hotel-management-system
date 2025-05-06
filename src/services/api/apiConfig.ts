@@ -15,6 +15,7 @@ export const userRooms_endpoints = {
 };
 export const userBooking = {
   CREATE_BOOKING: `/portal/booking`,
+  PAY_BOOKING: (id: string) => `/portal/booking/${id}/pay`,
 };
 
 export const facilities_endpoints = {

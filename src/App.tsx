@@ -18,6 +18,13 @@ import AuthLayout from "./modules/Shared/AuthLayout/AuthLayout";
 import RoomDetails from "./modules/User/RoomDetails/RoomDetails";
 import Home from "./modules/User/Home/Home";
 
+import Checkout from "./modules/User/Checkout/Checkout";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+const stripe = loadStripe(
+  "pk_test_51OTjURBQWp069pqTmqhKZHNNd3kMf9TTynJtLJQIJDOSYcGM7xz3DabzCzE7bTxvuYMY0IX96OHBjsysHEKIrwCK006Mu7mKw8"
+);
+
 function App() {
   const router = createBrowserRouter([
     {
@@ -28,6 +35,14 @@ function App() {
       children: [
         { index: true, element: <Home /> },
         { path: "room-details/:roomId", element: <RoomDetails /> },
+        {
+          path: "payment/checkout",
+          element: (
+            <Elements stripe={stripe}>
+              <Checkout />
+            </Elements>
+          ),
+        },
       ],
     },
     {
