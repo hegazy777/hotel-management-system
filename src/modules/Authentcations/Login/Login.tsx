@@ -6,7 +6,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 
 import { loginSehemaValidation } from "../../../services/vaildators";
 import { apiInstance } from "../../../services/api/apiInstance";
-import { admin_endpoints } from "../../../services/api/apiConfig";
+import { auth_endpoints } from "../../../services/api/apiConfig";
 import { useContext } from "react";
 import { AuthContext } from "../../../contexts/AuthContext";
 
@@ -17,6 +17,8 @@ import { LoginFormType } from "../../../interfaces/LoginFormInterface";
 import PasswordField from "../../Shared/CustomPasswordField/CustomPasswordField";
 import CustomTextField from "../../Shared/CustomTextField/CustomTextField";
 import { AxiosErrorResponse } from "../../../interfaces/AxiosErrorResponseInterface";
+import { jwtDecode } from "jwt-decode";
+import { CustomJwtPayload } from "../../../interfaces/JwtPayloadInterface";
 
 export default function Login() {
   const showSnackbar = useContext(SnackbarContext);
@@ -38,15 +40,25 @@ export default function Login() {
 
   const onSubmit = async (data: LoginFormType) => {
     try {
-      const response = await apiInstance.post(admin_endpoints.LOGIN, data);
+      const response = await apiInstance.post(auth_endpoints.LOGIN, data);
       const tokenWithOutBearerPrefix = response.data.data.token.replace(
         /^Bearer\s+/i,
         ""
       );
       localStorage.setItem("token", tokenWithOutBearerPrefix);
 
+      const { role } = tokenWithOutBearerPrefix
+        ? (jwtDecode(tokenWithOutBearerPrefix) as CustomJwtPayload)
+        : { role: "" };
+
       setToken(tokenWithOutBearerPrefix);
-      navigate("/");
+
+      if (role === "admin") {
+        navigate("/dashboard");
+      }
+      if (role === "user") {
+        navigate("/");
+      }
       showSnackbar("Logged in successfully", "success");
     } catch (error) {
       if (isAxiosError(error)) {

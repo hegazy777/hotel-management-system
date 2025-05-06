@@ -4,7 +4,7 @@ import { AuthContext } from "../../../contexts/AuthContext";
 
 export default function ProtectedRoute({ children }: { children: ReactNode }) {
   const { token, isManager } = useContext(AuthContext);
-  if (!token && !isManager) {
+  if (token && !isManager) {
     return <Navigate to="/" />;
   }
 
