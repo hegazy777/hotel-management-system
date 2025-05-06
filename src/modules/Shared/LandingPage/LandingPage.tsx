@@ -19,51 +19,40 @@ import HotelSection from "./HotelSection";
 import AdsSections from "./AdsSection";
 import TestimonialSlider from "./TestimonalSlider";
 import Footer from "./Footer";
-import { privateApiInstance } from "../../../services/api/apiInstance";
-import { room_endpoints } from "../../../services/api/apiConfig";
+
+import axios from "axios";
+
+import { DateRangePicker } from "rsuite";
+import { useNavigate } from "react-router-dom";
+
+import "rsuite/DateRangePicker/styles/index.css";
 
 export default function LandingPage() {
+  const navigate = useNavigate();
   const [count, setCount] = useState(2);
   const [rooms, setRooms] = useState([]);
+  const [ads, setAdds] = useState([]);
 
-  const listings = [
-    {
-      title: "Blue Origin Fams",
-      location: "Jakarta, Indonesia",
-      price: "$50",
-      image: "https://i.ibb.co/7kLKH9N/1.jpg",
-    },
-    {
-      title: "Ocean Land",
-      location: "Bandung, Indonesia",
-      price: "$22",
-      image: "https://i.ibb.co/gJLc98z/2.jpg",
-    },
-    {
-      title: "Stark House",
-      location: "Malang, Indonesia",
-      price: "$856",
-      image: "https://i.ibb.co/0F0PRvp/3.jpg",
-    },
-    {
-      title: "Vinna Vill",
-      location: "Malang, Indonesia",
-      price: "$62",
-      image: "https://i.ibb.co/zGHcv6Y/4.jpg",
-    },
-    {
-      title: "Bobox",
-      location: "Medan, Indonesia",
-      price: "$72",
-      image: "https://i.ibb.co/n7ZffgP/5.jpg",
-    },
-  ];
-  const fetchRooms = async (page = 1, size = 4) => {
+  const [dateRange, setDateRange] = useState([null, null]);
+
+  const handleExplore = () => {
+    if (dateRange[0] && dateRange[1]) {
+      const startDate = dateRange[0].toISOString().split("T")[0];
+      const endDate = dateRange[1].toISOString().split("T")[0];
+      navigate(
+        `/explore?startDate=${startDate}&endDate=${endDate}&capacity=${count}`
+      );
+    } else {
+      alert("Please select a date range.");
+    }
+  };
+
+  const fetchRooms = async () => {
     try {
-      const response = await privateApiInstance.get(room_endpoints.GET_ALL_ROOMS, {
-        params: { page, size },
-      });
-  
+      const response = await axios.get(
+        "https://upskilling-egypt.com:3000/api/v0/portal/rooms/available?page=1&size=10&startDate=2023-01-20&endDate=2023-01-30"
+      );
+
       if (response.data.success) {
         setRooms(response.data.data.rooms);
       } else {
@@ -71,11 +60,27 @@ export default function LandingPage() {
       }
     } catch (error) {
       console.error("Error fetching rooms:", error);
-    } 
+    }
   };
-  
+  const fetchAdds = async () => {
+    try {
+      const response = await axios.get(
+        "https://upskilling-egypt.com:3000/api/v0/portal/ads"
+      );
+
+      if (response.data.success) {
+        setAdds(response.data.data.ads);
+      } else {
+        console.error("API returned an unsuccessful response.");
+      }
+    } catch (error) {
+      console.error("Error fetching rooms:", error);
+    }
+  };
+
   useEffect(() => {
-    fetchRooms(1, 4);
+    fetchRooms();
+    fetchAdds();
   }, []);
 
   return (
@@ -109,23 +114,15 @@ export default function LandingPage() {
             Time to make another memorable moments.
           </Typography>
 
-          <Typography variant="subtitle1" fontWeight="bold">
-            Start Booking
-          </Typography>
           <Typography variant="caption">Pick a Date</Typography>
-          <TextField
-            fullWidth
-            placeholder="20 Jan - 22 Jan"
-            sx={{ my: 1, backgroundColor: "white", borderRadius: 1 }}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <CalendarMonth />
-                </InputAdornment>
-              ),
-            }}
-          />
 
+          <Box sx={{ my: 1 }}>
+            <DateRangePicker
+              onChange={(value) => setDateRange(value)}
+              placeholder="Select Date Range"
+              style={{ width: "100%" }}
+            />
+          </Box>
           <Typography variant="caption">Capacity</Typography>
           <Box
             sx={{
@@ -166,6 +163,7 @@ export default function LandingPage() {
             variant="contained"
             size="large"
             sx={{ mt: 2, width: 200, borderRadius: "8px", color: "#fff" }}
+            onClick={handleExplore}
           >
             Explore
           </Button>
@@ -195,91 +193,88 @@ export default function LandingPage() {
         </Typography>
 
         {rooms.length >= 5 && (
-  <Box
-    sx={{
-      display: "flex",
-      flexWrap: "wrap",
-      gap: 3,
-    }}
-  >
-    {/* الكارت الكبير */}
-    <Box sx={{ flex: { xs: "100%", md: "25%" } }}>
-      <AdCard
-        item={{
-          title: rooms[0].name,
-          location: rooms[0].location,
-          price: `$${rooms[0].price}`,
-          image: rooms[0].images?.[0]?.url || Rectangle,
-        }}
-        height={400}
-      />
-    </Box>
+          <Box
+            sx={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 3,
+            }}
+          >
+            <Box sx={{ flex: { xs: "100%", md: "25%" } }}>
+              <AdCard
+                item={{
+                  title: rooms[0].name,
+                  location: rooms[0].location,
+                  price: `$${rooms[0].price}`,
+                  image: rooms[0].images?.[0] || Rectangle,
+                }}
+                height={400}
+              />
+            </Box>
 
-    {/* صف الكروت الصغيرة - العمود الأول */}
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        gap: 3,
-        flex: { xs: "100%", md: "25%" },
-      }}
-    >
-      <AdCard
-        item={{
-          title: rooms[1].name,
-          location: rooms[1].location,
-          price: `$${rooms[1].price}`,
-          image: rooms[1].images?.[0]?.url || Rectangle,
-        }}
-        height={190}
-      />
-      <AdCard
-        item={{
-          title: rooms[2].name,
-          location: rooms[2].location,
-          price: `$${rooms[2].price}`,
-          image: rooms[2].images?.[0]?.url || Rectangle,
-        }}
-        height={190}
-      />
-    </Box>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 3,
+                flex: { xs: "100%", md: "25%" },
+              }}
+            >
+              <AdCard
+                item={{
+                  title: rooms[1].name,
+                  location: rooms[1].location,
+                  price: `$${rooms[1].price}`,
+                  image: rooms[1].images?.[0] || Rectangle,
+                }}
+                height={190}
+              />
+              <AdCard
+                item={{
+                  title: rooms[2].name,
+                  location: rooms[2].location,
+                  price: `$${rooms[2].price}`,
+                  image: rooms[2].images?.[0] || Rectangle,
+                }}
+                height={190}
+              />
+            </Box>
 
-    {/* صف الكروت الصغيرة - العمود الثاني */}
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        gap: 3,
-        flex: { xs: "100%", md: "25%" },
-      }}
-    >
-      <AdCard
-        item={{
-          title: rooms[3].name,
-          location: rooms[3].location,
-          price: `$${rooms[3].price}`,
-          image: rooms[3].images?.[0]?.url || Rectangle,
-        }}
-        height={190}
-      />
-      <AdCard
-        item={{
-          title: rooms[4].name,
-          location: rooms[4].location,
-          price: `$${rooms[4].price}`,
-          image: rooms[4].images?.[0]?.url || Rectangle,
-        }}
-        height={190}
-      />
-    </Box>
-  </Box>
-)}
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 3,
+                flex: { xs: "100%", md: "25%" },
+              }}
+            >
+              <AdCard
+                item={{
+                  title: rooms[3].name,
+                  location: rooms[3].location,
+                  price: `$${rooms[3].price}`,
+                  image: rooms[3].images?.[0]?.url || Rectangle,
+                }}
+                height={190}
+              />
+              <AdCard
+                item={{
+                  title: rooms[4].name,
+                  location: rooms[4].location,
+                  price: `$${rooms[4].price}`,
+                  image: rooms[4].images?.[0] || Rectangle,
+                }}
+                height={190}
+              />
+            </Box>
+          </Box>
+        )}
       </Box>
-      <BackyardHousesSection />
-      <HotelSection/>
-      <AdsSections/>
-      <TestimonialSlider/>
-      <Footer/>
+      <BackyardHousesSection room={rooms} />
+      <HotelSection room={rooms} />
+      <AdsSections ads={ads} />
+      <TestimonialSlider />
+      <Footer />
     </>
   );
 }
@@ -312,12 +307,12 @@ function AdCard({ item, height }) {
         {item.price} per night
       </Box>
       <CardMedia
-  component="img"
-  height="100%"
-  image={item.image}
-  alt={item.title}
-  sx={{ objectFit: "cover" }}
-/>
+        component="img"
+        height="100%"
+        image={item.image}
+        alt={item.title}
+        sx={{ objectFit: "cover" }}
+      />
       <CardContent
         sx={{
           position: "absolute",
@@ -338,4 +333,4 @@ function AdCard({ item, height }) {
       </CardContent>
     </Card>
   );
-} 
+}

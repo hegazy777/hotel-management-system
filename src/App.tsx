@@ -15,6 +15,7 @@ import Dashboard from "./modules/Admin/Dashboard/Dashboard";
 import LandingPage from "./modules/Shared/LandingPage/LandingPage";
 import NotFound from "./modules/Shared/NotFound/NotFound";
 import Facilities from "./modules/Admin/Facilities/FacilitiesList/FacilitiesList";
+import ExplorePage from "./modules/Shared/LandingPage/Explore";
 
 function App() {
   const router = createBrowserRouter([
@@ -47,6 +48,8 @@ function App() {
         { path: "facilities", element: <Facilities /> },
       ],
     },
+    { path:"/explore", element:<ExplorePage />}
+    
   ]);
   return (
     <SnackbarProvider>
