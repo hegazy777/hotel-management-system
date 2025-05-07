@@ -50,7 +50,6 @@ function Register() {
   const onSubmit = async (data: DataType) => {
     const formData = new FormData();
   
-    // Append user fields
     formData.append("email", data.email);
     formData.append("password", data.password);
     formData.append("userName", data.userName);
@@ -60,15 +59,12 @@ function Register() {
     formData.append("role", "user");
   
     try {
-      // Convert defaultProfileImg to File object
       const response = await fetch(defaultProfileImg);
       const blob = await response.blob();
       const file = new File([blob], "userImage.png", { type: blob.type });
   
-      // Append profile image
       formData.append("profileImage", file);
   
-      // Send FormData to backend
       const res = await apiInstance.post(users_endpoints.REGISTER, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
