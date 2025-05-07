@@ -1,9 +1,9 @@
-export const baseURL = "https://upskilling-egypt.com:3000/api/v0/";
+export const baseURL = "https://upskilling-egypt.com:3000/api/v0";
 export const imageURL = "https://upskilling-egypt.com:3000/";
 
-export const admin_endpoints = {
-  LOGIN: `/admin/users/login`,
-  REGISTER: `/Users/Register`,
+export const users_endpoints = {
+  LOGIN: `/portal/users/login`,
+  REGISTER: `/portal/users`,
   VERIFY: `/Users/Verify`,
   RESET_REQUEST: `/Users/Reset/Request`,
   RESET: `/Users/Reset`,
