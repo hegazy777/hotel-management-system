@@ -24,8 +24,6 @@ export default function AuthLayout() {
         </Container>
       </Grid>
       <Grid size={6}>
-        {/* image  */}
-
         <img style={{ float: "right", padding: "15px" }} src={LoginImg} />
       </Grid>
     </Grid>

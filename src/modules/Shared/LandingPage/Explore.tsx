@@ -48,53 +48,70 @@ export default function ExplorePage() {
 
   return (
     <Box sx={{ p: 4 }}>
-      <Typography variant="h4" mb={4}>Available Rooms</Typography>
-      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 4 }}>
-      {/* Breadcrumb */}
-      <Breadcrumbs aria-label="breadcrumb">
-        <Link color="inherit" onClick={() => navigate("/")}>
+      <Breadcrumbs aria-label="breadcrumb" sx={{ mb: 2 }}>
+        <Link
+          color="inherit"
+          onClick={() => navigate("/")}
+          style={{ cursor: "pointer", textDecoration: "none" }}
+        >
           Home
         </Link>
         <Typography color="text.primary">Explore</Typography>
       </Breadcrumbs>
-    </Box>
-      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 3 }}>
+
+      <Typography variant="h4" fontWeight="bold" mb={4}>
+        Available Rooms
+      </Typography>
+
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+          gap: 3,
+        }}
+      >
         {rooms.map((room, index) => (
           <Card
             key={index}
             sx={{
-              width: 300,
-              height: 300,
+              height: 250,
               borderRadius: 3,
               overflow: "hidden",
               position: "relative",
-              boxShadow: 3,
+              boxShadow: 4,
+              transition: "transform 0.3s ease",
+              "&:hover": {
+                transform: "scale(1.03)",
+              },
             }}
           >
             <Box
               sx={{
                 position: "absolute",
-                top: 0,
-                right: 0,
+                top: 10,
+                right: 10,
                 backgroundColor: "#FF498B",
                 color: "#fff",
-                borderBottomLeftRadius: "12px",
-                px: 2,
-                py: 0.8,
-                fontSize: "0.9rem",
+                borderRadius: "8px",
+                px: 1.5,
+                py: 0.5,
+                fontSize: "0.8rem",
                 fontWeight: "bold",
                 zIndex: 2,
               }}
             >
-              ${room.price} per night
+              ${room.price} / night
             </Box>
 
             <CardMedia
               component="img"
               height="100%"
-              image={room.images?.[0] || Rectangle}
-              alt={room.roomNumber}
-              sx={{ objectFit: "cover" }}
+              image={room.images?.length ? room.images[0] : Rectangle}
+              alt={`Room ${room.roomNumber}`}
+              sx={{
+                objectFit: "cover",
+                filter: "brightness(0.85)",
+              }}
             />
 
             <CardContent
@@ -103,17 +120,18 @@ export default function ExplorePage() {
                 bottom: 0,
                 left: 0,
                 width: "100%",
-                background:
-                  "linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0,0,0,0))",
-                color: "white",
+                background: "rgba(0,0,0,0.6)",
+                color: "#fff",
                 px: 2,
-                pb: 2,
+                py: 1,
               }}
             >
               <Typography variant="subtitle1" fontWeight="bold">
                 Room #{room.roomNumber}
               </Typography>
-              <Typography variant="caption">{room.roomNumber || "Conference Room"}</Typography>
+              <Typography variant="caption">
+                {room.roomType || "Standard"}
+              </Typography>
             </CardContent>
           </Card>
         ))}
