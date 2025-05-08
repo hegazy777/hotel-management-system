@@ -17,3 +17,11 @@ export const facilities_endpoints = {
   DELETE_FACILITY: (id: string) => `/admin/room-facilities/${id}`,
   ADD_FACILITY: `/admin/room-facilities`,
 };
+export const Ads_endpoints = {
+  GET_ALL_Ads: `admin/ads`,
+  GET_Add_details: (id: string | number) => `portal/ads/${id}`,
+  EditOnAdd: (id: string) => `admin/ads/${id}`,
+  deleteAdd: (id: string) => `admin/ads/${id}`,
+  addAdd: `admin/ads`,
+  getRoomId: "admin/rooms?page=1&size=10"
+};
