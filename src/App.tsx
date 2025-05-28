@@ -15,6 +15,7 @@ import Dashboard from "./modules/Admin/Dashboard/Dashboard";
 import LandingPage from "./modules/Shared/LandingPage/LandingPage";
 import NotFound from "./modules/Shared/NotFound/NotFound";
 import Facilities from "./modules/Admin/Facilities/FacilitiesList/FacilitiesList";
+import RoomAds from "./modules/Admin/RoomAds/RoomAds";
 
 function App() {
   const router = createBrowserRouter([
@@ -45,6 +46,7 @@ function App() {
       children: [
         { index: true, element: <Dashboard /> },
         { path: "facilities", element: <Facilities /> },
+        { path: "room-ads", element: <RoomAds /> },
       ],
     },
   ]);
